@@ -17,10 +17,10 @@ namespace Manipulator
         private readonly string[] _ports = ["s1", "s2"];
 
         // 병 이동 애니메이션 관련 변수
-        private List<UIElement> s1Bottles;
-        private List<UIElement> s2Bottles;
-        private int transferredBottles = 0;
-        private bool isTransferInProgress = false;
+        private List<UIElement> _s1Bottles;
+        private List<UIElement> _s2Bottles;
+        private int _transferredBottles = 0;
+        private bool _isTransferInProgress = false;
 
         public MainWindow()
         {
@@ -71,8 +71,8 @@ namespace Manipulator
         }
 
         private void InitializeBottles() {
-            s1Bottles = [];
-            s2Bottles = [];
+            _s1Bottles = [];
+            _s2Bottles = [];
         }
 
         private void S1_L_Click(object sender, RoutedEventArgs e) {
@@ -101,11 +101,12 @@ namespace Manipulator
             _currentClient = "xms";
         }
 
+        #region bottle animation
         public async void StartBottleTransferProcess() {
-            if (isTransferInProgress) return;
+            if (_isTransferInProgress) return;
 
-            isTransferInProgress = true;
-            transferredBottles = 0;
+            _isTransferInProgress = true;
+            _transferredBottles = 0;
 
             // 모든 버튼 비활성화
             DisableAllButtons();
@@ -125,22 +126,20 @@ namespace Manipulator
             // 모든 병이 이동 완료되면 S2의 U 버튼 활성화
             S1_L.IsEnabled = true;
             S2_U.IsEnabled = true;
-            isTransferInProgress = false;
-
-            MessageBox.Show("모든 병 이동 완료! S2의 U 버튼이 활성화되었습니다.", "완료", MessageBoxButton.OK, MessageBoxImage.Information);
+            _isTransferInProgress = false;
         }
 
         private void DrawS1BoxWithBottles() {
             // 기존 병들 제거
-            foreach (var bottle in s1Bottles) {
+            foreach (var bottle in _s1Bottles) {
                 if (S1Container.Children.Contains(bottle))
                     S1Container.Children.Remove(bottle);
             }
-            s1Bottles.Clear();
+            _s1Bottles.Clear();
 
             // 병 4개 생성 (2x2 배치)
-            double[] xPositions = { 30, 70, 30, 70 }; // 왼쪽, 오른쪽, 왼쪽, 오른쪽
-            double[] yPositions = { 40, 40, 80, 80 }; // 위, 위, 아래, 아래
+            double[] xPositions = [30, 70, 30, 70]; // 왼쪽, 오른쪽, 왼쪽, 오른쪽
+            double[] yPositions = [40, 40, 80, 80]; // 위, 위, 아래, 아래
 
             for (int i = 0; i < 4; i++) {
                 var bottle = CreateBottle(false); // 스티커 없는 병
@@ -148,16 +147,16 @@ namespace Manipulator
                 Canvas.SetTop(bottle, yPositions[i]);
 
                 S1Container.Children.Add(bottle);
-                s1Bottles.Add(bottle);
+                _s1Bottles.Add(bottle);
             }
         }
 
         private void DrawS2EmptyBox() {
-            foreach (var bottle in s2Bottles) {
+            foreach (var bottle in _s2Bottles) {
                 if (S2Container.Children.Contains(bottle))
                     S2Container.Children.Remove(bottle);
             }
-            s2Bottles.Clear();
+            _s2Bottles.Clear();
         }
 
         private static UIElement CreateBottle(bool withSticker) {
@@ -209,9 +208,9 @@ namespace Manipulator
         }
 
         private async Task TransferBottleFromS1ToS2(int bottleIndex) {
-            if (bottleIndex >= s1Bottles.Count) return;
+            if (bottleIndex >= _s1Bottles.Count) return;
 
-            var bottle = s1Bottles[bottleIndex];
+            var bottle = _s1Bottles[bottleIndex];
             var startX = Canvas.GetLeft(bottle);
             var startY = Canvas.GetTop(bottle);
 
@@ -225,8 +224,8 @@ namespace Manipulator
             await AttachStickerToBottle(bottle);
 
             // 3단계: S2로 이동
-            var s2X = 30.0 + (transferredBottles % 2) * 40; // 2x2 배치
-            var s2Y = 40.0 + (transferredBottles / 2) * 40;
+            var s2X = 30.0 + (_transferredBottles % 2) * 40; // 2x2 배치
+            var s2Y = 40.0 + (_transferredBottles / 2) * 40;
             S1Container.Children.Remove(bottle);
 
             var newBottleWithSticker = CreateBottle(true);
@@ -239,9 +238,9 @@ namespace Manipulator
             Canvas.SetLeft(newBottleWithSticker, s2X);
             Canvas.SetTop(newBottleWithSticker, s2Y);
             S2Container.Children.Add(newBottleWithSticker);
-            s2Bottles.Add(newBottleWithSticker);
+            _s2Bottles.Add(newBottleWithSticker);
 
-            transferredBottles++;
+            _transferredBottles++;
         }
 
         private static async Task AnimateBottleMovement(UIElement bottle, double fromX, double fromY, double toX, double toY, double durationSeconds) {
@@ -325,12 +324,12 @@ namespace Manipulator
             ManipulatorContainer.Children.Clear();
 
             // 리스트 초기화
-            s1Bottles.Clear();
-            s2Bottles.Clear();
+            _s1Bottles.Clear();
+            _s2Bottles.Clear();
 
             // 변수 초기화
-            transferredBottles = 0;
-            isTransferInProgress = false;
+            _transferredBottles = 0;
+            _isTransferInProgress = false;
 
             // 박스 색상 초기화
             s1.Background = System.Windows.Media.Brushes.LightGreen;
@@ -339,5 +338,6 @@ namespace Manipulator
             // 모든 버튼 활성화
             EnableAllButtons();
         }
+        #endregion bottle animation
     }
 }

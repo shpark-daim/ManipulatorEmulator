@@ -17,8 +17,8 @@ namespace Manipulator
         private readonly string[] _ports = ["s1", "s2"];
 
         // 병 이동 애니메이션 관련 변수
-        private List<UIElement> _s1Bottles;
-        private List<UIElement> _s2Bottles;
+        private readonly List<UIElement> _s1Bottles = [];
+        private readonly List<UIElement> _s2Bottles = [];
         private int _transferredBottles = 0;
         private bool _isTransferInProgress = false;
 
@@ -27,7 +27,6 @@ namespace Manipulator
             InitializeComponent();
             InitializeMqttClients();
             _ = ConnectMqttClient();
-            InitializeBottles();
         }
 
         private void InitializeMqttClients() {
@@ -68,11 +67,6 @@ namespace Manipulator
             } catch (Exception ex) {
                 Console.WriteLine($"MQTT 연결 오류: {ex.Message}");
             }
-        }
-
-        private void InitializeBottles() {
-            _s1Bottles = [];
-            _s2Bottles = [];
         }
 
         private void S1_L_Click(object sender, RoutedEventArgs e) {

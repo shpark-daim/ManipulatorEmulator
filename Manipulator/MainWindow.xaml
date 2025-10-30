@@ -94,11 +94,17 @@
                         BorderThickness="2" 
                         Background="LightSteelBlue"
                         HorizontalAlignment="Center">
-                        <TextBlock Text="S2" 
-                               HorizontalAlignment="Center" 
-                               VerticalAlignment="Center" 
-                               FontSize="16" 
-                               FontWeight="Bold"/>
+                        <Grid>
+                            <TextBlock Text="S2" 
+                                       HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center" 
+                                       FontSize="16" 
+                                       FontWeight="Bold"
+                                       Panel.ZIndex="10"/>
+                            <Canvas Name="S2Container" 
+                                    Width="120" 
+                                    Height="120"/>
+                        </Grid>
                     </Border>
 
                     <!-- S2 버튼들 -->
@@ -131,11 +137,17 @@
                         BorderThickness="2" 
                         Background="LightSteelBlue"
                         HorizontalAlignment="Center">
-                        <TextBlock Text="S1" 
-                               HorizontalAlignment="Center" 
-                               VerticalAlignment="Center" 
-                               FontSize="16" 
-                               FontWeight="Bold"/>
+                        <Grid>
+                            <TextBlock Text="S1" 
+                                       HorizontalAlignment="Center" 
+                                       VerticalAlignment="Center" 
+                                       FontSize="16" 
+                                       FontWeight="Bold"
+                                       Panel.ZIndex="10"/>
+                            <Canvas Name="S1Container" 
+                                    Width="120" 
+                                    Height="120"/>
+                        </Grid>
                     </Border>
 
                     <!-- S1 버튼들 -->
@@ -163,16 +175,19 @@
             <!-- 오른쪽 Manipulator 영역 -->
             <Border Grid.Column="1" 
                 Background="LightGray" 
-                BorderBrush="DarkGray" 
+                BorderBrush="DarkGray"
+                Opacity="0.5"
                 BorderThickness="2" 
-                Margin="10">
+                Margin="10"
+                Panel.ZIndex="1">
                 <Grid>
-                    <!-- 중앙 Manipulator 텍스트 -->
                     <TextBlock Text="Manipulator" 
-                           HorizontalAlignment="Center" 
-                           VerticalAlignment="Center" 
-                           FontSize="15"
-                           Foreground="DarkSlateGray"/>
+                               HorizontalAlignment="Center" 
+                               VerticalAlignment="Center" 
+                               FontSize="15" 
+                               Foreground="DarkSlateGray"/>
+                    <Canvas Name="ManipulatorContainer" 
+                            Background="Transparent"/>
                 </Grid>
             </Border>
 

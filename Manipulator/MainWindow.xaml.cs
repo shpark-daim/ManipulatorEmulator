@@ -119,6 +119,7 @@ namespace Manipulator
 
             // 모든 병이 이동 완료되면 S2의 U 버튼 활성화
             S1_L.IsEnabled = true;
+            S2_L.IsEnabled = true;
             S2_U.IsEnabled = true;
             _isTransferInProgress = false;
         }

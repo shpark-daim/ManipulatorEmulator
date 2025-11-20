@@ -10,10 +10,10 @@
 
   <ItemGroup>
     <PackageReference Include="Daim.Xms.DataServices.Client.OrderService" Version="3.0.0" />
-    <PackageReference Include="Daim.Xms.GraphQLClient" Version="5.1.0" />
+    <PackageReference Include="Daim.Xms.GraphQLClient" Version="5.1.1" />
     <PackageReference Include="Daim.Xms.Pcp" Version="4.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.10" />
-    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="9.0.10" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.0" />
     <PackageReference Include="MQTTnet" Version="5.0.1.1416" />
   </ItemGroup>
 

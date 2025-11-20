@@ -56,23 +56,46 @@
                 Background="#FFF0F0F0" 
                 BorderBrush="#FFCCCCCC" 
                 BorderThickness="0,0,0,1">
-            <StackPanel Orientation="Horizontal" 
-                        HorizontalAlignment="Center" 
-                        VerticalAlignment="Center">
-                <TextBlock Text="xms" 
+            <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Width="280">
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Left"
+                            Margin="0,0,20,0">
+                    <TextBlock Text="xms" 
                            VerticalAlignment="Center" 
                            FontSize="12" 
                            FontWeight="Bold"
                            Margin="0,0,10,0"/>
-                <ToggleButton Name="MqttToggle" 
-                              Style="{StaticResource PrettyToggleButton}"
-                              Checked="MqttToggle_Checked" 
-                              Unchecked="MqttToggle_Unchecked"/>
-                <TextBlock Text="aas" 
+                    <ToggleButton Name="MqttToggle" 
+                            Style="{StaticResource PrettyToggleButton}"
+                            Checked="ClientIsAas" 
+                            Unchecked="ClientIsXms"/>
+                    <TextBlock Text="aas" 
                            VerticalAlignment="Center" 
                            FontSize="12" 
                            FontWeight="Bold"
                            Margin="10,0,0,0"/>
+                </StackPanel>
+                <StackPanel Background="LightSteelBlue" Width="5"/>
+                <StackPanel Orientation="Horizontal" 
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Margin="20,0,0,0">
+                    <TextBlock Text="1" 
+                           VerticalAlignment="Center" 
+                           FontSize="12" 
+                           FontWeight="Bold"
+                           Margin="0,0,10,0"/>
+                    <ToggleButton Name="RepeatToggle" 
+                          Style="{StaticResource PrettyToggleButton}"
+                          Checked="SendStatusInRepeat" 
+                          Unchecked="SendStatusOneTime"/>
+                    <TextBlock Text="n+" 
+                           VerticalAlignment="Center" 
+                           FontSize="12" 
+                           FontWeight="Bold"
+                           Margin="10,0,0,0"/>
+                </StackPanel>
             </StackPanel>
         </Border>
         <Grid Grid.Row="1">
@@ -111,11 +134,19 @@
                     <StackPanel Orientation="Horizontal" 
                             HorizontalAlignment="Center" 
                             Margin="0,10,0,0">
+                        <Button Name="S2_N" 
+                            Content="N" 
+                            Click="S2_N_Click"
+                            Width="40" 
+                            Height="30"
+                            Margin="0,0,5,0"
+                            BorderBrush="DarkGray"/>
                         <Button Name="S2_L" 
                             Content="L" 
+                            Click="S2_L_Click"
                             Width="40" 
                             Height="30" 
-                            Margin="0,0,10,0"
+                            Margin="0,0,5,0"
                             BorderBrush="DarkGray"/>
                         <Button Name="S2_U" 
                             Content="U" 
@@ -153,19 +184,25 @@
                     <StackPanel Orientation="Horizontal" 
                             HorizontalAlignment="Center" 
                             Margin="0,10,0,0">
+                        <Button Name="S1_N" 
+                            Content="N"
+                            Click="S1_L_Click"
+                            Width="40" 
+                            Height="30"
+                            Margin="0,0,5,0"
+                            BorderBrush="DarkGray"/>
                         <Button Name="S1_L" 
                             Content="L" 
                             Click="S1_L_Click"
                             Width="40" 
                             Height="30" 
-                            Margin="0,0,10,0"
+                            Margin="0,0,5,0"
                             BorderBrush="DarkGray"/>
-                        <Button Name="S1_U" 
-                            Content="U" 
+                        <Button Name="X"
                             Width="40" 
                             Height="30"
-                            IsEnabled="False"
-                            BorderBrush="DarkGray"/>
+                            Opacity="0"
+                            IsEnabled="True"/>
                     </StackPanel>
                 </StackPanel>
 

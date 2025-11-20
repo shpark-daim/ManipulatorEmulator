@@ -8,13 +8,14 @@ using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using PcpStatus = Daim.Xms.Pcp.PcpStatus<object, object>;
 
-namespace Manipulator
-{
-    public partial class MainWindow : Window
-    {
+namespace Manipulator {
+    public partial class MainWindow : Window {
         private string _currentClient = "xms";
         private IMqttClient? _mqttClient;
         private readonly string[] _ports = ["s1", "s2"];
+
+        private bool _sendOneTime = true;
+        private CancellationTokenSource? _sendStatusCts;
 
         // 병 이동 애니메이션 관련 변수
         private readonly List<UIElement> _s1Bottles = [];
@@ -22,8 +23,7 @@ namespace Manipulator
         private int _transferredBottles = 0;
         private bool _isTransferInProgress = false;
 
-        public MainWindow()
-        {
+        public MainWindow() {
             InitializeComponent();
             InitializeMqttClients();
             _ = ConnectMqttClient();
@@ -36,8 +36,7 @@ namespace Manipulator
             //_mqttClient.ApplicationMessageReceivedAsync += OnMessageReceived;
             _mqttClient.ConnectedAsync += async (e) => {
 
-                foreach(var portId in _ports)
-                {
+                foreach (var portId in _ports) {
                     var topicForXms = Pcp.MakeSubAllCmdTopic(portId);
                     await _mqttClient.SubscribeAsync(topicForXms);
 
@@ -46,7 +45,7 @@ namespace Manipulator
                 }
             };
 
-            _mqttClient.DisconnectedAsync += async (e) => {};
+            _mqttClient.DisconnectedAsync += async (e) => { };
         }
 
         private async Task ConnectMqttClient() {
@@ -71,28 +70,65 @@ namespace Manipulator
 
         private void S1_L_Click(object sender, RoutedEventArgs e) {
             SendPcpStatus("s1", PcpTransferState.L);
-            StartBottleTransferProcess();
+            //StartBottleTransferProcess();
+        }
+
+        private void S1_N_Click(object sender, RoutedEventArgs e) {
+            SendPcpStatus("s1", PcpTransferState.N);
+        }
+
+        private void S2_L_Click(object sender, RoutedEventArgs e) {
+            SendPcpStatus("s2", PcpTransferState.L);
         }
 
         private void S2_U_Click(object sender, RoutedEventArgs e) {
             SendPcpStatus("s2", PcpTransferState.U);
         }
 
+        private void S2_N_Click(object sender, RoutedEventArgs e) {
+            SendPcpStatus("s2", PcpTransferState.N);
+        }
+
         private async void SendPcpStatus(string portId, PcpTransferState state) {
+            _sendStatusCts?.Cancel();
+            _sendStatusCts = new CancellationTokenSource();
+            var token = _sendStatusCts.Token;
             var status = new PcpStatus(portId, 0, 0, PcpMode.A, PcpDirection.B, [], state, false) { };
             var msg = new MqttApplicationMessageBuilder()
                     .WithTopic(Pcp.MakeStatusTopic(portId, _currentClient))
                     .WithPayload(JsonSerializer.Serialize(status))
                     .Build();
+            await SendMessage(msg);
+
+            try {
+                while (!_sendOneTime && !token.IsCancellationRequested) {
+                    await Task.Delay(3000, token);
+                    await SendMessage(msg);
+                }
+            } catch {
+
+            }
+        }
+
+        private async Task SendMessage(MqttApplicationMessage msg) {
             await _mqttClient!.PublishAsync(msg);
         }
 
-        private void MqttToggle_Checked(object sender, RoutedEventArgs e) {
+        private void ClientIsAas(object sender, RoutedEventArgs e) {
             _currentClient = "aas";
         }
 
-        private void MqttToggle_Unchecked(object sender, RoutedEventArgs e) {
+        private void ClientIsXms(object sender, RoutedEventArgs e) {
             _currentClient = "xms";
+        }
+
+        private void SendStatusOneTime(object sender, RoutedEventArgs e) {
+            _sendStatusCts?.Cancel();
+            _sendOneTime = true;
+        }
+
+        private void SendStatusInRepeat(object sender, RoutedEventArgs e) {
+            _sendOneTime = false;
         }
 
         #region bottle animation
